@@ -1,0 +1,154 @@
+<html>
+	<head>
+		<script>
+			/*GLOBAL VARIABLES*/
+			var board=[];//array representing squares of gameboard
+			var boardLength=30;//64;//int describing # squares on gameboard. Could be adjustable depending on alternate game rules.
+			var boardNoAdjacentColoredSquareBool=true;
+			
+			var deck=[];//array representing cards in deck
+			var deckLength=512;//int describing # cards in deck. Could be adjustable depending on alternate game rules.
+			
+			var players=[];//array representing players' positions
+			var playersLength=4;//int describing # players in game.
+			
+			var playerNumberTurn=0;//int describing which players turn. Should be incremented after each player's turn and reset to 0 when greater than playersLength var.
+			var currentCardIndex=0;//int describing the current card (index). Should be incremented after each turn (and reset to 0 when greater than deckLength var).
+			
+			var mustLandExactlyOnEndSquare=false;
+			
+			/*FUNCTIONS*/
+			function initGame(){
+				//INITIALIZE BOARD
+				for(var i=0; i<boardLength;i++){//for-loop to set gameboard's squares. Arrays in JavaScript (and most programming languages) start at 0. This will fill the arrays with elements numbered 0 through 63 (boardLength-1).
+					board[i]=
+						Math.floor(//round the number to the next lowest integer. See http://www.w3schools.com/jsref/jsref_floor.asp
+							Math.random()//generate a random number from 0 up to but not including 1. See http://www.w3schools.com/jsref/jsref_random.asp
+							*
+							6//multiply it by to get a random number from 0 up to but not including 6.
+						);
+				}
+				
+				//INITIALIZE DECK
+				for(var i=0; i<deckLength;i++){//for-loop to set deck's card colors.
+					deck[i]=
+						Math.floor(//round the number to the next lowest integer. See http://www.w3schools.com/jsref/jsref_floor.asp
+							Math.random()//generate a random number from 0 up to but not including 1. See http://www.w3schools.com/jsref/jsref_random.asp
+							*
+							6//multiply it by to get a random number from 0 up to but not including 6.
+						);
+				}
+				
+				//INITIALIZE PLAYER POSITIONS (AT 0)
+				for(var i=0; i<playersLength;i++){
+					players[i]=0;
+				}
+				
+				drawGame();
+			}
+			function drawGame(){
+				var gameString="";
+				for(var i=0; i<board.length;i++){//for-loop to loop though gameboard's squares and draw them (and players) on board.
+				
+					if(i==0) gameString+="START -";//Mark first square with "START"
+					else if(i==board.length-1) gameString+="END -";//Mark last (winning) square with "END"
+					
+					//DRAW GAMEBOARD SQUARES (COLORS)
+					//gameString+="\t"+board[i];//draw square #
+					gameString+="\t"+colorIndexToName(board[i]);//draw square color
+					
+					
+					//DRAW PLAYER POSITIONS
+					for(var j=0; j<players.length;j++){
+						if(players[j]==i){//if player's position is same as current square of board. Draw player.
+							//for(var k=0; k<j;k++)
+								gameString+="\t";//indent to allow multiple players on a line
+							gameString+="P"+(j+1);//use +1 to represent 1-4, not 0-3
+						}
+					}
+					gameString+="\n";
+				}
+				
+				document.getElementById("gameTextArea").value=gameString;
+				//alert("Ready!")
+			}
+			function selectCard(){
+				document.getElementById("btnDrawCard").disabled=true;
+				
+				document.getElementById("btnMove").disabled=false;
+				document.getElementById("divCardDisplay").style.display="block";
+				
+				//document.getElementById("spanCardDisplay").innerHTML=deck[currentCardIndex];
+				document.getElementById("spanCardDisplay").innerHTML=colorIndexToName(deck[currentCardIndex]);
+				document.getElementById("spanCardDisplay").style.color=colorIndexToName(deck[currentCardIndex]);
+			}
+			function colorIndexToName(colorIdx){
+				switch(colorIdx){
+					case 0: return "Purple";
+					case 1: return "Red";
+					case 2: return "Yellow";
+					case 3: return "Blue";
+					case 4: return "Orange";
+					case 5: return "Green";
+					default: return "ERR";
+				}
+			}
+			function movePlayer(){
+				while(++players[playerNumberTurn]){
+					if(board.length<=players[playerNumberTurn])return playerWins();
+					else if(board[players[playerNumberTurn]]==deck[currentCardIndex])break;
+				}
+				
+				if(++currentCardIndex>deckLength){//reset currentCardIndex back to 0 if there are no more cards.
+					currentCardIndex=0;
+					//you could reshuffle deck here too, but you'd have to take out any special cards.
+				}
+				if(++playerNumberTurn>(playersLength-1))playerNumberTurn=0;
+				
+				drawGame();
+				
+				document.getElementById("spanPlayerNumTurn").innerHTML=(playerNumberTurn+1);
+				document.getElementById("btnDrawCard").disabled=false;
+				document.getElementById("btnMove").disabled=true;
+				document.getElementById("divCardDisplay").style.display="none";
+			}
+			function playerWins(){
+				alert("Player "+(playerNumberTurn+1)+" Wins!");
+				
+				document.getElementById("gameTextArea").value="";
+				document.getElementById("btnDrawCard").disabled=true;
+				document.getElementById("btnMove").disabled=true;
+				document.getElementById("divCardDisplay").style.display="none";
+			}
+		</script>
+	</head>
+	<body onload="initGame()">
+		<!--GAME OPTIONS DISP-->
+		<!--
+		<div style="border solid red 2px;">
+			# Human Players:<input id="txtNumPlayers" type="text" value="1"/>
+			# AI Players:<input id="txtNumAIs" type="text" value="1"/>
+			<input type="button" onclick="initGame()" value="Start Game"/>
+		</div>
+		-->
+		
+		<!--TURN DESC-->
+		<strong>Player #<span id="spanPlayerNumTurn">1</span>'s Turn.</strong>
+		<div>
+			<input id="btnDrawCard" type="button" onclick="selectCard()" value="Draw Card"/>
+		</div>
+		<br/>
+		
+		<!--CARD CHOICE DISP-->
+		<div id="divCardDisplay" style="display:none;"><!-- style="display:none;"-->
+			You got a <span id="spanCardDisplay" style="color:red; font-weight:bold"></span>&nbsp;Card!
+			<input id="btnMove" type="button" onclick="movePlayer()" value="Move!" disabled/>
+		</div>
+		<br/>
+		<hr/>
+		<br/>
+		
+		<!--GAME BOARD DISP-->
+		<textarea id="gameTextArea" cols="100" rows="100"></textarea>
+	</body>
+</html>

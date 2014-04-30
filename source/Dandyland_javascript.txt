@@ -1,0 +1,159 @@
+<script>
+info="<html>
+	<head>
+		<script>
+			/*GLOBAL VARIABLES*/
+			var board=[];//array representing squares of gameboard
+			var boardLength=30;//64;//int describing # squares on gameboard. Could be adjustable depending on alternate game rules.
+			var boardNoAdjacentColoredSquareBool=true;
+			
+			var deck=[];//array representing cards in deck
+			var deckLength=512;//int describing # cards in deck. Could be adjustable depending on alternate game rules.
+			
+			var players=[];//array representing players&#39; positions
+			var playersLength=4;//int describing # players in game.
+			
+			var playerNumberTurn=0;//int describing which players turn. Should be incremented after each player&#39;s turn and reset to 0 when greater than playersLength var.
+			var currentCardIndex=0;//int describing the current card (index). Should be incremented after each turn (and reset to 0 when greater than deckLength var).
+			
+			var mustLandExactlyOnEndSquare=false;
+			
+			/*FUNCTIONS*/
+			function initGame(){
+				//INITIALIZE BOARD
+				for(var i=0; i<boardLength;i++){//for-loop to set gameboard&#39;s squares. Arrays in JavaScript (and most programming languages) start at 0. This will fill the arrays with elements numbered 0 through 63 (boardLength-1).
+					board[i]=
+						Math.floor(//round the number to the next lowest integer. See http://www.w3schools.com/jsref/jsref_floor.asp
+							Math.random()//generate a random number from 0 up to but not including 1. See http://www.w3schools.com/jsref/jsref_random.asp
+							*
+							6//multiply it by to get a random number from 0 up to but not including 6.
+						);
+				}
+				
+				//INITIALIZE DECK
+				for(var i=0; i<deckLength;i++){//for-loop to set deck&#39;s card colors.
+					deck[i]=
+						Math.floor(//round the number to the next lowest integer. See http://www.w3schools.com/jsref/jsref_floor.asp
+							Math.random()//generate a random number from 0 up to but not including 1. See http://www.w3schools.com/jsref/jsref_random.asp
+							*
+							6//multiply it by to get a random number from 0 up to but not including 6.
+						);
+				}
+				
+				//INITIALIZE PLAYER POSITIONS (AT 0)
+				for(var i=0; i<playersLength;i++){
+					players[i]=0;
+				}
+				
+				drawGame();
+			}
+			function drawGame(){
+				var gameString=&#34;&#34;;
+				for(var i=0; i<board.length;i++){//for-loop to loop though gameboard&#39;s squares and draw them (and players) on board.
+				
+					if(i==0) gameString+=&#34;START -&#34;;//Mark first square with &#34;START&#34;
+					else if(i==board.length-1) gameString+=&#34;END -&#34;;//Mark last (winning) square with &#34;END&#34;
+					
+					//DRAW GAMEBOARD SQUARES (COLORS)
+					//gameString+=&#34;\t&#34;+board[i];//draw square #
+					gameString+=&#34;\t&#34;+colorIndexToName(board[i]);//draw square color
+					
+					
+					//DRAW PLAYER POSITIONS
+					for(var j=0; j<players.length;j++){
+						if(players[j]==i){//if player&#39;s position is same as current square of board. Draw player.
+							//for(var k=0; k<j;k++)
+								gameString+=&#34;\t&#34;;//indent to allow multiple players on a line
+							gameString+=&#34;P&#34;+(j+1);//use +1 to represent 1-4, not 0-3
+						}
+					}
+					gameString+=&#34;\n&#34;;
+				}
+				
+				document.getElementById(&#34;gameTextArea&#34;).value=gameString;
+				//alert(&#34;Ready!&#34;)
+			}
+			function selectCard(){
+				document.getElementById(&#34;btnDrawCard&#34;).disabled=true;
+				
+				document.getElementById(&#34;btnMove&#34;).disabled=false;
+				document.getElementById(&#34;divCardDisplay&#34;).style.display=&#34;block&#34;;
+				
+				//document.getElementById(&#34;spanCardDisplay&#34;).innerHTML=deck[currentCardIndex];
+				document.getElementById(&#34;spanCardDisplay&#34;).innerHTML=colorIndexToName(deck[currentCardIndex]);
+				document.getElementById(&#34;spanCardDisplay&#34;).style.color=colorIndexToName(deck[currentCardIndex]);
+			}
+			function colorIndexToName(colorIdx){
+				switch(colorIdx){
+					case 0: return &#34;Purple&#34;;
+					case 1: return &#34;Red&#34;;
+					case 2: return &#34;Yellow&#34;;
+					case 3: return &#34;Blue&#34;;
+					case 4: return &#34;Orange&#34;;
+					case 5: return &#34;Green&#34;;
+					default: return &#34;ERR&#34;;
+				}
+			}
+			function movePlayer(){
+				while(++players[playerNumberTurn]){
+					if(board.length<=players[playerNumberTurn])return playerWins();
+					else if(board[players[playerNumberTurn]]==deck[currentCardIndex])break;
+				}
+				
+				if(++currentCardIndex>deckLength){//reset currentCardIndex back to 0 if there are no more cards.
+					currentCardIndex=0;
+					//you could reshuffle deck here too, but you&#39;d have to take out any special cards.
+				}
+				if(++playerNumberTurn>(playersLength-1))playerNumberTurn=0;
+				
+				drawGame();
+				
+				document.getElementById(&#34;spanPlayerNumTurn&#34;).innerHTML=(playerNumberTurn+1);
+				document.getElementById(&#34;btnDrawCard&#34;).disabled=false;
+				document.getElementById(&#34;btnMove&#34;).disabled=true;
+				document.getElementById(&#34;divCardDisplay&#34;).style.display=&#34;none&#34;;
+			}
+			function playerWins(){
+				alert(&#34;Player &#34;+(playerNumberTurn+1)+&#34; Wins!&#34;);
+				
+				document.getElementById(&#34;gameTextArea&#34;).value=&#34;&#34;;
+				document.getElementById(&#34;btnDrawCard&#34;).disabled=true;
+				document.getElementById(&#34;btnMove&#34;).disabled=true;
+				document.getElementById(&#34;divCardDisplay&#34;).style.display=&#34;none&#34;;
+			}
+		</script>
+	</head>
+	<body onload=&#34;initGame()&#34;>
+		<!--GAME OPTIONS DISP-->
+		<!--
+		<div style=&#34;border solid red 2px;&#34;>
+			# Human Players:<input id=&#34;txtNumPlayers&#34; type=&#34;text&#34; value=&#34;1&#34;/>
+			# AI Players:<input id=&#34;txtNumAIs&#34; type=&#34;text&#34; value=&#34;1&#34;/>
+			<input type=&#34;button&#34; onclick=&#34;initGame()&#34; value=&#34;Start Game&#34;/>
+		</div>
+		-->
+		
+		<!--TURN DESC-->
+		<strong>Player #<span id=&#34;spanPlayerNumTurn&#34;>1</span>&#39;s Turn.</strong>
+		<div>
+			<input id=&#34;btnDrawCard&#34; type=&#34;button&#34; onclick=&#34;selectCard()&#34; value=&#34;Draw Card&#34;/>
+		</div>
+		<br/>
+		
+		<!--CARD CHOICE DISP-->
+		<div id=&#34;divCardDisplay&#34; style=&#34;display:none;&#34;><!-- style=&#34;display:none;&#34;-->
+			You got a <span id=&#34;spanCardDisplay&#34; style=&#34;color:red; font-weight:bold&#34;></span>&nbsp;Card!
+			<input id=&#34;btnMove&#34; type=&#34;button&#34; onclick=&#34;movePlayer()&#34; value=&#34;Move!&#34; disabled/>
+		</div>
+		<br/>
+		<hr/>
+		<br/>
+		
+		<!--GAME BOARD DISP-->
+		<textarea id=&#34;gameTextArea&#34; cols=&#34;100&#34; rows=&#34;100&#34;></textarea>
+	</body>
+</html>
+"
+
+document.write(info)
+</script>
