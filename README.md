@@ -4,7 +4,7 @@ Dandyland App
 This repository contains the source code for the Dandy Land Android app demo 
 
 ![alt tag](http://img0.etsystatic.com/004/0/5952378/il_fullxfull.352669016_64vr.jpg)
-![alt tag](https://www.dropbox.com/s/9fxk5gyiytmknci/Screenshot_2014-04-30-19-09-48.png)
+![alt tag](http://www.datagenetics.com/blog/december12011/top.png)
 
 Bug Tracking
 -------------
