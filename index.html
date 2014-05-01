@@ -3,18 +3,18 @@
 	<head>
 		<script>
 			/*GLOBAL VARIABLES*/
-			var board = [];//array representing squares of gameboard
-			var boardLength = 30;//64;//int describing # squares on gameboard. Could be adjustable depending on alternate game rules.
+			var board = []; //array representing squares of gameboard
+			var boardLength = 30; //64;//int describing # squares on gameboard. Could be adjustable depending on alternate game rules.
 			var boardNoAdjacentColoredSquareBool = true;
 			
-			var deck = [];//array representing cards in deck
-			var deckLength = 512;//int describing # cards in deck. Could be adjustable depending on alternate game rules.
+			var deck = []; //array representing cards in deck
+			var deckLength = 512; //int describing # cards in deck. Could be adjustable depending on alternate game rules.
 			
 			var players = [];//array representing players' positions
-			var playersLength = 4;//int describing # players in game.
+			var playersLength = 4; //int describing # players in game.
 			
-			var playerNumberTurn = 0;//int describing which players turn. Should be incremented after each player's turn and reset to 0 when greater than playersLength var.
-			var currentCardIndex = 0;//int describing the current card (index). Should be incremented after each turn (and reset to 0 when greater than deckLength var).
+			var playerNumberTurn = 0; //int describing which players turn. Should be incremented after each player's turn and reset to 0 when greater than playersLength var.
+			var currentCardIndex = 0; //int describing the current card (index). Should be incremented after each turn (and reset to 0 when greater than deckLength var).
 			
 			var mustLandExactlyOnEndSquare = false;
 			
