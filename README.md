@@ -4,8 +4,7 @@ Dandyland App
 This repository contains the source code for the Dandy Land Android app demo 
 
 ![alt tag](http://img0.etsystatic.com/004/0/5952378/il_fullxfull.352669016_64vr.jpg)
-![alt tag](https://dl-web.dropbox.com/get/Screenshot_2014-04-30-19-09-48.png?_subject_uid=53377631&w=AADW-W6SJioLSwXkChDiC6pNLYe6KbH6bF8XtUq96UuMlw)
-
+![alt tag](https://www.dropbox.com/s/9fxk5gyiytmknci/Screenshot_2014-04-30-19-09-48.png)
 
 Bug Tracking
 -------------
@@ -32,7 +31,7 @@ This file summarizes what you will find in each of the files that make up the Da
 
 Prerequisites:
 -------------- 	    -
-1 download .Net Framework 4.0 and install it;              - compatible with source tree
+1  download .Net Framework 4.0 and install it;              - compatible with source tree
 2. Java SE Development Kit 8 Update 55
 
 
